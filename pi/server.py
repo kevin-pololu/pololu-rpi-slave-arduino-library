@@ -17,6 +17,9 @@ led0_state = False
 led1_state = False
 led2_state = False
 
+throttle_cmd = 0
+steering_cmd = 0
+
 @app.route("/")
 def hello():
     return render_template("index.html")
@@ -33,9 +36,12 @@ def status():
     }
     return json.dumps(data)
 
-@app.route("/motors/<left>,<right>")
-def motors(left, right):
-    a_star.motors(int(left), int(right))
+@app.route("/drive/<throttle>,<steering>")
+def drive(throttle, steering):
+    global throttle_cmd
+    global steering_cmd
+    throttle_cmd = int(throttle)
+    steering_cmd = int(steering)
     return ""
 
 @app.route("/leds/<int:led0>,<int:led1>,<int:led2>")
