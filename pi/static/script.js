@@ -1,6 +1,6 @@
 // Copyright Pololu Corporation.  For more information, see https://www.pololu.com/
-stop_motors = true
-block_set_motors = false
+reset_drive = true
+block_set_drive = false
 mouse_dragging = false
 
 function init() {
@@ -14,11 +14,12 @@ function init() {
 }
 
 function poll() {
-  $.ajax({url: "status.json"}).done(update_status)
-  if(stop_motors && !block_set_motors)
+  /*$.ajax({url: "status.json"}).done(update_status)*/
+  setTimeout(poll, 100)
+  if(reset_drive && !block_set_drive)
   {
-    setMotors(0,0);
-    stop_motors = false
+    setDrive(0,0);
+    reset_drive = false
   }
 }
 
@@ -56,7 +57,7 @@ function mouseup(e) {
   {
     e.preventDefault()
     mouse_dragging = false
-    stop_motors = true
+    reset_drive = true
   }
 }
 
@@ -83,35 +84,26 @@ function dragTo(x, y) {
   if(y < -1) y = -1
   if(y > 1) y = 1
 
-  left_motor = Math.round(400*(-y+x))
-  right_motor = Math.round(400*(-y-x))
-
-  if(left_motor > 400) left_motor = 400
-  if(left_motor < -400) left_motor = -400
-
-  if(right_motor > 400) right_motor = 400
-  if(right_motor < -400) right_motor = -400
-
-  stop_motors = false
-  setMotors(left_motor, right_motor)
+  reset_drive = false
+  setDrive(Math.round(-y * 100), Math.round(x * 100))
 }
 
 function touchend(e) {
   e.preventDefault()
-  stop_motors = true
+  reset_drive = true
 }
 
-function setMotors(left, right) {
-  $("#joystick").html("Motors: " + left + " "+ right)
+function setDrive(throttle, steering) {
+  $("#joystick").html("Throttle: " + throttle + "<br>Steering: "+ steering)
 
-  if(block_set_motors) return
-  block_set_motors = true
+  if(block_set_drive) return
+  block_set_drive = true
 
-  $.ajax({url: "motors/"+left+","+right}).done(setMotorsDone)
+  $.ajax({url: "drive/"+throttle+","+steering}).done(setDriveDone)
 }
 
-function setMotorsDone() {
-  block_set_motors = false
+function setDriveDone() {
+  block_set_drive = false
 }
 
 function setLeds() {
