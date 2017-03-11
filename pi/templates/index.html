@@ -33,9 +33,13 @@
 </tr>
 </table>
 
+<form>
+<input type="text" id="speak-text" maxlength="1000" value="" onfocus = "this.select()">
+<input type="submit"  onclick="speak(); $('#speak-text').focus(); return false" value="Speak">
+</form>
+
 <p>
-<input type="text" id="notes" maxlength="14" value="l16ceg>c">
-<button onclick="playNotes()">Play</button>
+<label><input type="checkbox" id="music" onchange="setMusic()">Music</label>
 </p>
 
 <table>

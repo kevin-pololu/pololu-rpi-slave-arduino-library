@@ -11,11 +11,17 @@ app.debug = True
 from a_star import AStar
 a_star = AStar()
 
+from espeak import espeak
+espeak.voice = 'en-us'
+espeak.set_parameter(espeak.Parameter.Rate, 125)
+
 import json
 
 led0_state = False
 led1_state = False
 led2_state = False
+
+music_enable = False
 
 throttle_cmd = 0
 steering_cmd = 0
@@ -44,6 +50,12 @@ def drive(throttle, steering):
     steering_cmd = int(steering)
     return ""
 
+@app.route("/music/<int:enable>")
+def music(enable):
+    global music_enable
+    music_enable = enable
+    return ""
+
 @app.route("/leds/<int:led0>,<int:led1>,<int:led2>")
 def leds(led0, led1, led2):
     a_star.leds(led0, led1, led2)
@@ -66,6 +78,11 @@ def hearbeat(state):
 @app.route("/play_notes/<notes>")
 def play_notes(notes):
     a_star.play_notes(notes)
+    return ""
+
+@app.route("/speak/<text>")
+def speak(text):
+    espeak.synth(text)
     return ""
 
 @app.route("/halt")

@@ -113,9 +113,19 @@ function setLeds() {
   $.ajax({url: "leds/"+led0+","+led1+","+led2})
 }
 
+function setMusic() {
+  music_enable = $('#music')[0].checked ? 1 : 0
+  $.ajax({url: "music/"+music_enable})
+}
+
 function playNotes() {
   notes = $('#notes').val()
   $.ajax({url: "play_notes/"+notes})
+}
+
+function speak() {
+  text = $('#speak-text').val()
+  $.ajax({url: "speak/"+text})
 }
 
 function shutdown() {
